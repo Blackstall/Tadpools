@@ -1,6 +1,10 @@
-# 🐸 Tadpools
+<p align="center">
+  <img src="docs/assets/logo.png" alt="Tadpools logo" width="200" />
+</p>
 
-> Swim through the noise. Surface the risk.
+<h1 align="center">Tadpools</h1>
+
+<p align="center"><em>Swim through the noise. Surface the risk.</em></p>
 
 **Tadpools** is an open-source, swarm-based fraud detection and KYC (Know Your Customer) onboarding intelligence system. Ten AI agents collaborate across three rounds to analyse a company onboarding case, challenge each other's findings, and produce an **explainable** risk decision — visualised in real time as animated tadpoles swimming through a bioluminescent pool.
 
@@ -95,8 +99,4 @@ Found a vulnerability? Please report it privately — see [SECURITY.md](SECURITY
 
 ## Disclaimer
 
-Tadpools is a decision-support tool. It does not replace human judgment or regulatory compliance obligations. Risk decisions produced by this system should always be reviewed by qualified personnel before being acted upon.
-
-## License
-
-[MIT](LICENSE) © 2026 Farris Nasarudin
+Tadpools is a decision-support tool. It does not replace human judgment or regulatory compliance obligations. Risk decisions produced by
