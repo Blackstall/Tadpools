@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tadpools — Interactive Demo</title>
+<meta name="description" content="Swarm-based, explainable fraud detection & KYC intelligence. Simulated demo — the real system runs fully local with Ollama.">
+<link rel="icon" href="assets/logo.png">
+<style>
+:root{
+  --bg:#EDF9F7; --panel:rgba(255,255,255,.72); --pool-bg:#CBF0ED;
+  --border:rgba(20,184,166,.14); --border-s:rgba(20,184,166,.45);
+  --text:#0D2B28; --muted:#5A7A78; --accent:#14B8A6;
+  --high:#EF4444; --medium:#F59E0B; --low:#22C55E; --debate:#8B5CF6;
+  --risk-low-bg:#DCFCE7; --risk-med-bg:#FFF3E0; --risk-high-bg:#FFEBEE; --meta-bg:#EDE9FE;
+  --r-xl:24px; --r-lg:16px; --r-md:10px; --r-sm:6px;
+  --shadow:0 12px 40px rgba(18,52,59,.10); --shadow-s:0 4px 12px rgba(18,52,59,.08);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:"Inter","Plus Jakarta Sans",system-ui,sans-serif;font-size:14px;line-height:1.45}
+a{color:var(--accent)}
+.top-bar{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;background:var(--panel);border-bottom:1px solid var(--border);backdrop-filter:blur(18px);position:sticky;top:0;z-index:20}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:16px}
+.brand img{width:34px;height:34px;border-radius:50%}
+.badge-demo{font-size:11px;font-weight:600;color:#7C3AED;background:var(--meta-bg);padding:3px 10px;border-radius:999px}
+.gh-link{font-size:13px;text-decoration:none;font-weight:600;border:1px solid var(--border-s);padding:6px 14px;border-radius:999px}
+.wrap{max-width:1200px;margin:0 auto;padding:24px 20px 60px}
+.notice{background:var(--meta-bg);border:1px solid rgba(139,92,246,.25);border-radius:var(--r-md);padding:10px 16px;font-size:12.5px;color:#4C1D95;margin-bottom:20px}
+.intake{background:var(--panel);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--shadow-s);padding:20px;margin-bottom:20px}
+.intake h2{font-size:15px;margin-bottom:4px}
+.intake p{color:var(--muted);font-size:12.5px;margin-bottom:14px}
+.cases{display:flex;gap:14px;flex-wrap:wrap}
+.case-card{flex:1;min-width:260px;text-align:left;background:#fff;border:1.5px solid var(--border);border-radius:var(--r-md);padding:14px 16px;cursor:pointer;transition:.18s;font:inherit}
+.case-card:hover{border-color:var(--border-s);box-shadow:var(--shadow-s);transform:translateY(-1px)}
+.case-card.active{border-color:var(--accent);box-shadow:0 0 0 3px rgba(20,184,166,.15)}
+.case-card h3{font-size:14px;margin-bottom:4px}
+.case-card .meta{font-size:12px;color:var(--muted)}
+.case-card .tag{display:inline-block;margin-top:8px;font-size:11px;font-weight:600;padding:2px 9px;border-radius:999px}
+.tag.clean{background:var(--risk-low-bg);color:#15803D}
+.tag.sus{background:var(--risk-high-bg);color:#B91C1C}
+.grid{display:grid;grid-template-columns:1.35fr 1fr;gap:20px}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--shadow-s);overflow:hidden}
+.panel-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border)}
+.panel-head h2{font-size:13.5px}
+.round-pill{font-size:11px;font-weight:600;color:var(--accent);background:rgba(20,184,166,.1);padding:3px 10px;border-radius:999px}
+#pool{display:block;width:100%;background:radial-gradient(ellipse at 50% 30%,#DFF7F4 0%,var(--pool-bg) 70%)}
+.feed{height:430px;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.evt{border:1px solid var(--border);border-left-width:4px;border-radius:var(--r-sm);background:#fff;padding:8px 12px;animation:pop .3s ease}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1}}
+.evt .who{font-weight:700;font-size:12px;display:flex;justify-content:space-between;gap:8px}
+.evt .who .conf{color:var(--muted);font-weight:500}
+.evt .sum{font-size:12.5px;margin-top:2px}
+.evt .reason{font-size:11.5px;color:var(--muted);margin-top:4px;padding-left:14px;position:relative}
+.evt .reason::before{content:"↳";position:absolute;left:0}
+.evt.low{border-left-color:var(--low)} .evt.medium{border-left-color:var(--medium)}
+.evt.high{border-left-color:var(--high)} .evt.meta{border-left-color:var(--debate);background:#FBFAFF}
+.evt.sys{border-left-color:var(--accent);background:#F4FBFA;color:var(--muted);font-size:12px}
+.decision{margin-top:20px;border-radius:var(--r-lg);border:1px solid var(--border);box-shadow:var(--shadow);padding:22px;display:none;animation:pop .4s ease}
+.decision.show{display:block}
+.decision.APPROVE{background:var(--risk-low-bg)} .decision.ESCALATE,.decision.REJECT{background:var(--risk-high-bg)} .decision.REVIEW{background:var(--risk-med-bg)}
+.decision h2{font-size:20px;margin-bottom:6px}
+.scorebar{height:10px;background:rgba(0,0,0,.08);border-radius:999px;overflow:hidden;margin:10px 0 14px}
+.scorebar div{height:100%;border-radius:999px;transition:width 1.2s ease}
+.decision ul{padding-left:20px;font-size:13px}
+.decision li{margin-bottom:4px}
+.btn-reset{margin-top:14px;background:var(--accent);border:none;color:#fff;font-weight:600;padding:9px 20px;border-radius:999px;cursor:pointer;font-size:13px}
+footer{text-align:center;color:var(--muted);font-size:12px;margin-top:40px}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <div class="brand"><img src="assets/logo.png" alt=""><span>Tadpools</span><span class="badge-demo">SIMULATED DEMO</span></div>
+  <a class="gh-link" href="https://github.com/Blackstall/Tadpools">★ GitHub</a>
+</div>
+
+<div class="wrap">
+  <div class="notice">🔬 This is a <strong>fully simulated</strong> demo with pre-scripted agent findings — no LLM, no backend. The real Tadpools runs locally with Ollama, PostgreSQL and MinIO. <a href="https://github.com/Blackstall/Tadpools#quick-start">Run it yourself →</a></div>
+
+  <div class="intake">
+    <h2>Submit an onboarding case</h2>
+    <p>Pick a sample company and watch ten agents swim, analyse, debate and decide.</p>
+    <div class="cases">
+      <button class="case-card" data-case="clean">
+        <h3>Aqua Logistics Sdn Bhd</h3>
+        <div class="meta">Freight & warehousing · Registered 2014 · 3 documents</div>
+        <span class="tag clean">Legitimate profile</span>
+      </button>
+      <button class="case-card" data-case="shell">
+        <h3>Golden Horizon Trading Ltd</h3>
+        <div class="meta">"General trading" · Registered 6 weeks ago · 2 documents</div>
+        <span class="tag sus">Suspicious profile</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="panel">
+      <div class="panel-head"><h2>🌊 The Pool</h2><span class="round-pill" id="roundPill">idle</span></div>
+      <canvas id="pool" width="640" height="430"></canvas>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><h2>📡 Swarm feed</h2><span class="round-pill" id="feedCount">0 findings</span></div>
+      <div class="feed" id="feed"><div class="evt sys">Waiting for a case… select one above to activate the swarm.</div></div>
+    </div>
+  </div>
+
+  <div class="decision" id="decision"></div>
+
+  <footer>Tadpools — open source under MIT · <a href="https://github.com/Blackstall/Tadpools">github.com/Blackstall/Tadpools</a></footer>
+</div>
+
+<script>
+// ── Agents ────────────────────────────────────────────────────────────────────
+const CORE=[["nature","Nature of Business"],["age","Registration Age"],["doc","Document Authenticity"],["exist","Existence Verification"],["name","Name Matching"],["benef","Beneficiary Consistency"],["hist","Historical Suspicion"]];
+const META=[["skeptic","Skeptic"],["prosecutor","Prosecutor"],["chair","Chair"]];
+const COLORS={idle:"#94A3B8",analyzing:"#14B8A6",low:"#22C55E",medium:"#F59E0B",high:"#EF4444",meta:"#8B5CF6"};
+
+// ── Scenario scripts: [delay ms, agentId, riskLevel, confidence, summary, reasoning] ──
+const SCENARIOS={
+clean:{company:"Aqua Logistics Sdn Bhd",decision:"APPROVE",score:12,color:"#22C55E",
+reasons:["No high-risk findings across 3 rounds","Registration age 12 years — well past threshold","Documents internally consistent; beneficiary matches registry","Chair consensus: risk score 12/100 → auto-approve"],
+events:[
+[900,"nature","low",.92,"Declared freight & warehousing matches invoice line items.",["3 invoices reference container shipments and pallet storage","Industry code 52291 consistent with declared activity"]],
+[1900,"age","low",.97,"Registered 2014 — 12 years of operating history.",["Registration date well beyond 24-month risk threshold"]],
+[2900,"doc","low",.88,"Document metadata consistent, no tampering markers.",["PDF creation dates align with stated issue dates","No font or layer anomalies detected"]],
+[3900,"exist","low",.85,"Physical premises verified at declared address.",["Address appears in port authority tenant registry"]],
+[4900,"name","low",.94,"Company name matches registry exactly.",["Levenshtein distance 0 against SSM record"]],
+[5900,"benef","low",.9,"Beneficial owner identical across all documents.",["Same director listed on invoice, registry and bank letter"]],
+[6900,"hist","low",.91,"No prior cases or watchlist hits for entity or owner.",["0 matches in internal case history","0 sanctions list hits"]],
+[8200,"__round",2],
+[9000,"doc","low",.93,"Cross-checked peer findings — no conflicts to raise.",["Existence + name findings corroborate document set"]],
+[9900,"benef","low",.95,"Confidence raised after name-matching corroboration.",["Peer agent confirmed owner identity independently"]],
+[11000,"__round",3],
+[11700,"skeptic","meta",.8,"Challenged low document sample size (3 docs) — accepted as adequate for tier-1 volume.",["Document count small but consistent with SME onboarding"]],
+[12700,"prosecutor","meta",.7,"Worst-case argument: dormant shell revived. Rejected — 12y active filings contradict.",["Annual filings present for all 12 years"]],
+[13900,"chair","meta",.96,"Consensus formed: unanimous low risk. Recommending approval.",["7/7 core agents report low risk","No unresolved challenges"]]
+]},
+shell:{company:"Golden Horizon Trading Ltd",decision:"ESCALATE",score:84,color:"#EF4444",
+reasons:["3 high-risk findings sustained through challenge phase","Company registered 6 weeks ago with generic 'general trading' purpose","Beneficiary name differs between registry and bank letter","Invoice metadata created 2 days ago, backdated 8 months","Chair consensus: risk score 84/100 → escalate to human investigator"],
+events:[
+[900,"nature","medium",.74,"'General trading' — vague purpose, common shell-company marker.",["No industry-specific detail in any document","Declared activity matches 0 invoice line items"]],
+[1900,"age","high",.96,"Registered 43 days ago — far below 24-month threshold.",["Company incorporated 6 weeks before first transaction attempt"]],
+[2900,"doc","high",.87,"Invoice PDF created 2 days ago but dated 8 months earlier.",["XMP metadata creation date mismatch","Same font substitution artefact on both documents"]],
+[3900,"exist","medium",.66,"Declared address is a virtual-office provider.",["Address shared by 240+ registered entities"]],
+[4900,"name","medium",.71,"Name near-match to dissolved 'Golden Horizons Trading Ltd'.",["Levenshtein distance 1 to entity dissolved after fraud probe"]],
+[5900,"benef","high",.89,"Beneficial owner differs between registry and bank letter.",["Registry lists 'A. Rahman'; bank letter lists 'A. Rachman'","Signature styles inconsistent across documents"]],
+[6900,"hist","medium",.78,"Owner name variant linked to 1 prior escalated case.",["Fuzzy match against case #2023-114 (escalated, unresolved)"]],
+[8200,"__round",2],
+[9000,"nature","high",.82,"Raised to HIGH after peers: vague purpose + 43-day age + virtual office compound.",["Risk compounding rule triggered by 3 corroborating peer findings"]],
+[9900,"hist","high",.84,"Raised to HIGH — dissolved near-match entity shares the same virtual office.",["Cross-referenced name-matching and existence findings"]],
+[11000,"__round",3],
+[11700,"skeptic","meta",.75,"Tested innocent explanation: clerical spelling variance. Rejected — signatures also differ.",["Name variance alone excusable; combined with signature mismatch it is not"]],
+[12700,"prosecutor","meta",.9,"Pattern matches phoenix-company typology: dissolve, re-register, re-use infrastructure.",["4 independent markers align with known typology"]],
+[13900,"chair","meta",.93,"Consensus: high risk sustained. Escalating to human investigator with full evidence trail.",["3 high-risk findings unresolved after challenge","Auto-reject withheld: identity theft of applicant possible"]]
+]}};
+
+// ── Pool canvas ───────────────────────────────────────────────────────────────
+const cv=document.getElementById("pool"),ctx=cv.getContext("2d");
+const ALL=[...CORE.map(a=>({id:a[0],label:a[1],meta:false})),...META.map(a=>({id:a[0],label:a[1],meta:true}))];
+let tads=ALL.map((a,i)=>({...a,x:80+Math.random()*480,y:60+Math.random()*310,h:Math.random()*6.28,tail:Math.random()*6.28,state:"idle",bubble:null,bubbleT:0}));
+let running=false;
+function drawTad(t,time){
+  const c=t.state==="idle"?COLORS.idle:t.meta?COLORS.meta:COLORS[t.state]||COLORS.analyzing;
+  ctx.save();ctx.translate(t.x,t.y);ctx.rotate(t.h);
+  const wig=Math.sin(t.tail)*6;
+  ctx.strokeStyle=c;ctx.lineWidth=3;ctx.lineCap="round";
+  ctx.beginPath();ctx.moveTo(-8,0);ctx.quadraticCurveTo(-16,wig,-24,wig*1.6);ctx.stroke();
+  ctx.fillStyle=c;ctx.beginPath();ctx.ellipse(0,0,10,7.5,0,0,6.28);ctx.fill();
+  ctx.fillStyle="#fff";ctx.beginPath();ctx.arc(4,-2.5,2.6,0,6.28);ctx.fill();
+  ctx.fillStyle="#0D2B28";ctx.beginPath();ctx.arc(4.7,-2.5,1.2,0,6.28);ctx.fill();
+  if(t.state!=="idle"){ctx.globalAlpha=.25+.15*Math.sin(time/300);ctx.beginPath();ctx.arc(0,0,16,0,6.28);ctx.strokeStyle=c;ctx.lineWidth=1.5;ctx.stroke();ctx.globalAlpha=1}
+  ctx.restore();
+  ctx.font="10px Inter,sans-serif";ctx.fillStyle="#5A7A78";ctx.textAlign="center";
+  ctx.fillText(t.label,t.x,t.y+24);
+  if(t.bubble&&Date.now()-t.bubbleT<3800){
+    ctx.font="10.5px Inter,sans-serif";const w=ctx.measureText(t.bubble).width+14;
+    const bx=Math.min(Math.max(t.x,w/2+4),636-w/2),by=Math.max(t.y-34,16);
+    ctx.fillStyle="rgba(255,255,255,.94)";ctx.strokeStyle="rgba(20,184,166,.4)";
+    ctx.beginPath();ctx.roundRect(bx-w/2,by-11,w,20,8);ctx.fill();ctx.stroke();
+    ctx.fillStyle="#0D2B28";ctx.fillText(t.bubble,bx,by+3);
+  }
+}
+function tick(time){
+  ctx.clearRect(0,0,640,430);
+  // ambient particles
+  for(let i=0;i<14;i++){const px=(i*137+time/50)%640,py=(i*89+time/80)%430;ctx.globalAlpha=.12;ctx.fillStyle="#14B8A6";ctx.beginPath();ctx.arc(px,py,2,0,6.28);ctx.fill();ctx.globalAlpha=1}
+  tads.forEach(t=>{
+    const sp=t.state==="idle"?.35:1.1;
+    t.h+=(Math.random()-.5)*.15;t.tail+=.28*(t.state==="idle"?.6:1.6);
+    t.x+=Math.cos(t.h)*sp;t.y+=Math.sin(t.h)*sp;
+    if(t.x<30||t.x>610)t.h=Math.PI-t.h;if(t.y<30||t.y>390)t.h=-t.h;
+    t.x=Math.min(Math.max(t.x,30),610);t.y=Math.min(Math.max(t.y,30),390);
+    drawTad(t,time);
+  });
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+
+// ── Simulation driver ─────────────────────────────────────────────────────────
+const feed=document.getElementById("feed"),pill=document.getElementById("roundPill"),cnt=document.getElementById("feedCount"),dec=document.getElementById("decision");
+let timers=[],findings=0;
+function addEvt(html,cls){const d=document.createElement("div");d.className="evt "+cls;d.innerHTML=html;feed.appendChild(d);feed.scrollTop=feed.scrollHeight}
+function run(key){
+  timers.forEach(clearTimeout);timers=[];findings=0;
+  feed.innerHTML="";dec.className="decision";dec.innerHTML="";
+  const sc=SCENARIOS[key];
+  document.querySelectorAll(".case-card").forEach(b=>b.classList.toggle("active",b.dataset.case===key));
+  tads.forEach(t=>{t.state=t.meta?"idle":"analyzing";t.bubble=null});
+  pill.textContent="Round 1 — independent analysis";cnt.textContent="0 findings";
+  addEvt(`🐸 Case <strong>${sc.company}</strong> submitted — swarm activated, 7 core agents analysing…`,"sys");
+  sc.events.forEach(ev=>{
+    timers.push(setTimeout(()=>{
+      if(ev[1]==="__round"){
+        if(ev[2]===2){pill.textContent="Round 2 — shared memory & challenges";addEvt("🧠 Round 2 — agents read shared memory and re-evaluate…","sys")}
+        else{pill.textContent="Round 3 — debate & consensus";addEvt("⚖️ Challenge phase — Skeptic, Prosecutor and Chair enter the pool…","sys");tads.forEach(t=>{if(t.meta)t.state="meta"})}
+        return;
+      }
+      const[,id,risk,conf,sum,reasons]=ev;
+      const t=tads.find(x=>x.id===id);
+      if(t){t.state=risk==="meta"?"meta":risk;t.bubble=sum.length>46?sum.slice(0,44)+"…":sum;t.bubbleT=Date.now()}
+      findings++;cnt.textContent=findings+" findings";
+      const label=ALL.find(a=>a.id===id).label;
+      addEvt(`<div class="who"><span>${label}</span><span class="conf">${Math.round(conf*100)}% conf · ${risk==="meta"?"meta":risk.toUpperCase()}</span></div><div class="sum">${sum}</div>`+reasons.map(r=>`<div class="reason">${r}</div>`).join(""),risk);
+    },ev[0]));
+  });
+  timers.push(setTimeout(()=>{
+    pill.textContent="Decision issued";
+    tads.forEach(t=>t.state="idle");
+    dec.className="decision show "+sc.decision;
+    const emoji=sc.decision==="APPROVE"?"✅":"🚨";
+    dec.innerHTML=`<h2>${emoji} ${sc.decision==="APPROVE"?"Approved":"Escalated to human investigator"}</h2>
+      <div>Risk score</div><div class="scorebar"><div style="width:0;background:${sc.color}"></div></div>
+      <ul>${sc.reasons.map(r=>`<li>${r}</li>`).join("")}</ul>
+      <button class="btn-reset" onclick="document.querySelector('.intake').scrollIntoView({behavior:'smooth'})">Try the other case ↑</button>`;
+    requestAnimationFrame(()=>{dec.querySelector(".scorebar div").style.width=sc.score+"%"});
+    addEvt(`🏁 Policy engine: score ${sc.score}/100 → <strong>${sc.decision}</strong>. Full audit trail persisted.`,"sys");
+    dec.scrollIntoView({behavior:"smooth",block:"center"});
+  },15600));
+}
+document.querySelectorAll(".case-card").forEach(b=>b.addEventListener("click",()=>run(b.dataset.case)));
+</script>
+</body>
+</html>

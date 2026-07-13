@@ -6,6 +6,8 @@
 
 <p align="center"><em>Swim through the noise. Surface the risk.</em></p>
 
+<p align="center"><a href="https://blackstall.github.io/Tadpools/"><strong>🌊 Try the interactive demo</strong></a> — simulated swarm, no install needed</p>
+
 **Tadpools** is an open-source, swarm-based fraud detection and KYC (Know Your Customer) onboarding intelligence system. Ten AI agents collaborate across three rounds to analyse a company onboarding case, challenge each other's findings, and produce an **explainable** risk decision — visualised in real time as animated tadpoles swimming through a bioluminescent pool.
 
 Everything runs locally: PostgreSQL and MinIO via Docker, and a local LLM via [Ollama](https://ollama.com). No cloud dependencies, no data leaves your machine.
@@ -95,8 +97,4 @@ Contributions are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md) for setup, 
 
 ## Security
 
-Found a vulnerability? Please report it privately — see [SECURITY.md](SECURITY.md).
-
-## Disclaimer
-
-Tadpools is a decision-support tool. It does not replace human judgment or regulatory compliance obligations. Risk decisions produced by
+Found a vulnerability? Please report it privately — see [SECURITY.md](SECU
