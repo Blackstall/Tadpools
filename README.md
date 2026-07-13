@@ -48,8 +48,8 @@ tadpools/
 ## Quick start
 
 ```bash
-git clone https://github.com/<your-username>/tadpools.git
-cd tadpools
+git clone https://github.com/Blackstall/Tadpools.git
+cd Tadpools
 
 # 1. Environment
 cp .env.example .env
