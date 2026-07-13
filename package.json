@@ -1,0 +1,17 @@
+{
+  "name": "tadpools-starter",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev -w @tadpools/api\" \"npm run dev -w @tadpools/web\"",
+    "build": "npm run build -w @tadpools/shared && npm run build -w @tadpools/agents && npm run build -w @tadpools/api && npm run build -w @tadpools/web",
+    "typecheck": "npm run typecheck -ws"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "typescript": "^5.8.3"
+  }
+}

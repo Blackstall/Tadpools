@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+
+# Environment — never commit real credentials
+.env
+.env.local
+.env.*.local
+
+# Build output
+apps/web/.next/
+packages/*/dist/
+*.tsbuildinfo
+next-env.d.ts
+
+# Local tooling / editor
+.claude/
+.vscode/
+.idea/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db

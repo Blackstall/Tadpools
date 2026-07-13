@@ -1,0 +1,22 @@
+{
+  "name": "@tadpools/agents",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "exports": {
+    ".": "./dist/index.js",
+    "./index": "./dist/index.js",
+    "./agents/core/*": "./dist/agents/core/*.js",
+    "./agents/meta/*": "./dist/agents/meta/*.js",
+    "./llm/client": "./dist/llm/client.js",
+    "./llm/modelRouter": "./dist/llm/modelRouter.js"
+  },
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@tadpools/shared": "0.1.0"
+  }
+}

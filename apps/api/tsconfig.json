@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "declaration": true,
+    "baseUrl": ".",
+    "paths": {
+      "@tadpools/shared/*": ["../../packages/shared/dist/*"],
+      "@tadpools/agents/*": ["../../packages/agents/dist/*"]
+    }
+  },
+  "include": ["src/**/*"]
+}
