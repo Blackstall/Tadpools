@@ -116,4 +116,12 @@ Contributions are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md) for setup, 
 
 ## Security
 
-Found a vulnerability? Please report it privately — see [SECURITY.md](SECU
+Found a vulnerability? Please report it privately — see [SECURITY.md](SECURITY.md).
+
+## Disclaimer
+
+Tadpools is a decision-support tool. It does not replace human judgment or regulatory compliance obligations. Risk decisions produced by this system should always be reviewed by qualified personnel before being acted upon.
+
+## License
+
+[MIT](LICENSE) © 2026 Farris Nasarudin
