@@ -8,10 +8,13 @@
   "scripts": {
     "dev": "concurrently \"npm run dev -w @tadpools/api\" \"npm run dev -w @tadpools/web\"",
     "build": "npm run build -w @tadpools/shared && npm run build -w @tadpools/agents && npm run build -w @tadpools/api && npm run build -w @tadpools/web",
-    "typecheck": "npm run typecheck -ws"
+    "typecheck": "npm run typecheck -ws",
+    "test": "vitest run",
+    "demo": "node scripts/demo.mjs"
   },
   "devDependencies": {
     "concurrently": "^9.1.2",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.1"
   }
 }

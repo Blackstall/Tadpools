@@ -1,0 +1,15 @@
+{
+  "company": {
+    "companyName": "Nimbus Ventures Sdn Bhd",
+    "registrationNumber": "202601099887",
+    "registrationDate": "2026-06-02",
+    "natureOfBusiness": "General trading"
+  },
+  "beneficiary": {
+    "beneficiaryName": "Nimbus Ventures Sdn Bhd",
+    "accountNumber": "1234567890",
+    "bankName": "Fictional Bank Berhad"
+  },
+  "documents": [],
+  "consentAccepted": true
+}

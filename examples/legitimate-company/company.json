@@ -1,0 +1,15 @@
+{
+  "company": {
+    "companyName": "Aqua Logistics Sdn Bhd",
+    "registrationNumber": "201401234567",
+    "registrationDate": "2014-03-01",
+    "natureOfBusiness": "Freight forwarding and warehousing"
+  },
+  "beneficiary": {
+    "beneficiaryName": "Aqua Logistics Sdn Bhd",
+    "accountNumber": "1234567890",
+    "bankName": "Fictional Bank Berhad"
+  },
+  "documents": [],
+  "consentAccepted": true
+}

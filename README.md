@@ -80,6 +80,22 @@ Open http://localhost:3000 for the UI. The API health check is at http://localho
 | `npm run dev` | Run API and web concurrently in watch mode |
 | `npm run build` | Build all workspaces in dependency order |
 | `npm run typecheck` | Typecheck every workspace |
+| `npm test` | Run the unit test suite (vitest) |
+| `npm run demo` | Submit a synthetic example case to the local API |
+
+## Try it with synthetic examples
+
+Four fictional cases live in [`examples/`](examples/) — a legitimate company, a
+6-week-old shell, a third-party beneficiary and a document mismatch, each with a
+watermarked synthetic invoice. With the stack running:
+
+```bash
+npm run demo                          # approve path
+npm run demo suspicious-beneficiary   # escalation path
+```
+
+All example data is fictional — never upload real customer data. See
+[`examples/README.md`](examples/README.md).
 
 ## Documentation
 
@@ -90,6 +106,9 @@ Full documentation lives in [`docs/`](docs/):
 - [`docs/design.md`](docs/design.md) — design system
 - [`docs/audit_trail.md`](docs/audit_trail.md) — audit and compliance model
 - [`docs/schema.sql`](docs/schema.sql) — database schema
+- [`docs/evaluation.md`](docs/evaluation.md) — evaluation methodology and results template
+
+Trust & scope: [ROADMAP](ROADMAP.md) · [LIMITATIONS](LIMITATIONS.md) · [MODEL_CARD](MODEL_CARD.md) · [THREAT_MODEL](THREAT_MODEL.md) · [CHANGELOG](CHANGELOG.md)
 
 ## Contributing
 

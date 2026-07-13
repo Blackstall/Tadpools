@@ -1,0 +1,15 @@
+{
+  "company": {
+    "companyName": "Coral Bay Seafood Sdn Bhd",
+    "registrationNumber": "201801445566",
+    "registrationDate": "2018-06-15",
+    "natureOfBusiness": "Seafood processing and distribution"
+  },
+  "beneficiary": {
+    "beneficiaryName": "Zenith Petro Holdings Ltd",
+    "accountNumber": "9988776655",
+    "bankName": "Offshore Fictional Bank Ltd"
+  },
+  "documents": [],
+  "consentAccepted": true
+}

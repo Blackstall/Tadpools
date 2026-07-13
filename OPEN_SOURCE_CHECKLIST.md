@@ -41,9 +41,9 @@
 - [ ] Decide whether to commit `packages/*/dist/` — currently gitignored (recommended); contributors build from source
 - [ ] Remove or consolidate internal working docs in `docs/` that aren't useful to the public (`claude-ready.md`, `update.md`, `redesign.md`, `v2-build-plan.md`, `master-plan.md`) — or move them to a `docs/archive/`
 - [ ] Duplicate route check: `apps/api/src/routes/audit.ts` vs `auditRoutes.ts` — confirm both are intentional
-- [ ] Add at least a smoke test and a CI workflow (`.github/workflows/ci.yml` running `npm run typecheck && npm run build`)
+- [x] Unit tests + CI workflow (done)
 - [ ] Add a demo GIF/screenshot of the tadpole pool to the README — visual projects get far more stars
-- [ ] Document which Ollama model(s) you tested with in the README prerequisites
+- [x] Reference model documented in MODEL_CARD.md
 
 ### 4. Launch
 

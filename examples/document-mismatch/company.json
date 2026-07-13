@@ -1,0 +1,15 @@
+{
+  "company": {
+    "companyName": "Golden Horizon Trading Ltd",
+    "registrationNumber": "202501778899",
+    "registrationDate": "2025-11-20",
+    "natureOfBusiness": "General trading"
+  },
+  "beneficiary": {
+    "beneficiaryName": "Golden Horizon Trading Ltd",
+    "accountNumber": "1234567890",
+    "bankName": "Fictional Bank Berhad"
+  },
+  "documents": [],
+  "consentAccepted": true
+}

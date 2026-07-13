@@ -83,7 +83,7 @@ async function handleAction(
 function makeActionHandler(actionKey: string) {
   return async (req: import("express").Request, res: import("express").Response): Promise<void> => {
     try {
-      const { caseId } = req.params;
+      const caseId = String(req.params.caseId);
       if (!UUID_RE.test(caseId)) {
         res.status(400).json({ message: "Invalid case ID format" });
         return;
